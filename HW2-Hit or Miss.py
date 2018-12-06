@@ -1,0 +1,75 @@
+#Day 17 Homework 2
+#Hit or Miss Monte Carlo Method
+#Freshnal Integral
+
+import numpy as np
+import pylab as py
+import random
+
+xi=0.
+xf=2.
+nts=6000 #Number of runs
+X=np.linspace(xi,xf,nts)
+
+Area_rectangle=4.
+
+def function(x):
+    return np.cos(np.pi*x**2/2)
+A=function(X)
+
+def bisection(a,b):
+    e=0.001
+    while abs(a-b)>=e:
+        if (b>a and np.sign(function(a))!= np.sign(function(b))):
+            c=(a+b)/2.
+            if np.sign(function(c))==np.sign(function(a)):
+                a=c
+            if np.sign(function(c))==np.sign(function(b)):
+                b=c
+    return c
+    
+a1=0.1
+b1=1.25
+a2=1.25
+b2=2.00
+
+xint_1=bisection(a1,b1)
+xint_2=bisection(a2,b2)
+        
+Rx=np.zeros(nts)
+Ry=np.zeros(nts)
+
+for i in range(nts):
+    rx=random.uniform(0.,2.)
+    ry=random.uniform(-1.,1.)
+    Rx[i]=rx
+    Ry[i]=ry
+
+Np=0
+Nn=0
+for j in range(nts):
+    py.plot(Rx[j],Ry[j],".")
+    if ((Rx[j]<xint_1) or (Rx[j]>xint_2)):
+        if((Ry[j]>0) and (abs(Ry[j])<abs(function(Rx[j])))):
+            Np+=1
+    elif ((Rx[j]>xint_1) and (Rx[j]<xint_2)):
+        if((Ry[j]<0) and (abs(Ry[j])<abs(function(Rx[j])))):
+            Nn+=1
+    
+I=Area_rectangle*(float(Np)-float(Nn))/nts
+print "The approximated integral is",I
+
+def exact_v():
+    return 0.488253406074
+    
+Error=abs(exact_v()-I)
+print "The Error is",Error
+py.plot(X,A)
+# py.axvline(x=0,ymin=-1,ymax=1,linewidth=5,color="r")
+# py.axvline(x=2,ymin=-1,ymax=1,linewidth=5,color="r")
+# py.axhline(y=1,xmin=0,xmax=2,linewidth=5,color="r")
+# py.axhline(y=-1,xmin=0,xmax=2,linewidth=5,color="r")
+py.axhline()
+py.show()
+
+    
